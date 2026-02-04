@@ -65,10 +65,11 @@ import {
 } from "@/components/ai-elements/sources";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import type { ToolUIPart } from "ai";
-import { CheckIcon, GlobeIcon, MicIcon } from "lucide-react";
+import { CheckIcon, GlobeIcon, MicIcon, Sparkles, Trash2 } from "lucide-react";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { useWorkspaceStore } from "@/store/WorkspaceStore";
+import { aiService, type Message as AIMessage } from "@/services/aiService";
 
 interface MessageType {
   key: string;
@@ -95,35 +96,12 @@ interface MessageType {
 const initialMessages: MessageType[] = [
   {
     key: nanoid(),
-    from: "user",
-    versions: [
-      {
-        id: nanoid(),
-        content: "Can you explain how to use React hooks effectively?",
-      },
-    ],
-  },
-  {
-    key: nanoid(),
     from: "assistant",
-    sources: [
-      {
-        href: "https://react.dev/reference/react",
-        title: "React Documentation",
-      },
-    ],
     versions: [
       {
         id: nanoid(),
-        content: `# React Hooks Best Practices
-
-React hooks are a powerful feature that let you use state and other React features without writing classes. 
-
-## Rules of Hooks
-1. **Top Level Only**
-2. **React Functions Only**
-
-Would you like to analyze the current workspace code?`,
+        content:
+          "I'm your **Pro Assistant**. I have full access to your workspace context and can help with deep architecture reviews or complex refactoring. What's on your mind?",
       },
     ],
   },
@@ -162,9 +140,9 @@ const models = [
 
 const suggestions = [
   "Analyze current diff",
-  "Explain these changes",
   "Suggest optimizations",
-  "Check for bugs",
+  "Check for security bugs",
+  "Refactor to Clean Code",
 ];
 
 const PromptInputAttachmentsDisplay = () => {
@@ -200,124 +178,164 @@ export const ProChat: React.FC = () => {
     "submitted" | "streaming" | "ready" | "error"
   >("ready");
   const [messages, setMessages] = useState<MessageType[]>(initialMessages);
-  const [_streamingMessageId, setStreamingMessageId] = useState<string | null>(
-    null,
-  );
 
   const selectedModelData = models.find((m) => m.id === model);
 
-  const streamResponse = useCallback(
-    async (messageId: string, content: string) => {
+  const addUserMessage = useCallback(
+    async (content: string) => {
+      // 1. Add user message to UI
+      const userMessage: MessageType = {
+        key: nanoid(),
+        from: "user",
+        versions: [{ id: nanoid(), content }],
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
       setStatus("streaming");
-      setStreamingMessageId(messageId);
 
-      const words = content.split(" ");
-      let currentContent = "";
+      // 2. Prepare for Assistant message
+      const assistantMessageId = nanoid();
+      const assistantMessage: MessageType = {
+        key: nanoid(),
+        from: "assistant",
+        versions: [{ id: assistantMessageId, content: "" }],
+      };
 
-      for (let i = 0; i < words.length; i++) {
-        currentContent += (i > 0 ? " " : "") + words[i];
+      setMessages((prev) => [...prev, assistantMessage]);
 
-        setMessages((prev) =>
-          prev.map((msg) => {
-            if (msg.versions.some((v) => v.id === messageId)) {
-              return {
-                ...msg,
-                versions: msg.versions.map((v) =>
-                  v.id === messageId ? { ...v, content: currentContent } : v,
-                ),
-              };
-            }
-            return msg;
-          }),
-        );
+      try {
+        // 3. Call the REAL aiService
+        const simpleHistory: AIMessage[] = messages
+          .filter((m) => m.versions[0].content !== "") // filter out empty assistant message we just added
+          .map((m) => ({
+            id: m.key,
+            role: m.from,
+            text: m.versions[0].content,
+          }));
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.random() * 60 + 30),
-        );
+        const stream = await aiService.chatWithContext(simpleHistory, content);
+
+        let fullText = "";
+        for await (const part of stream) {
+          fullText += typeof part === "string" ? part : part.text || "";
+
+          setMessages((prev) =>
+            prev.map((msg) => {
+              if (msg.versions.some((v) => v.id === assistantMessageId)) {
+                return {
+                  ...msg,
+                  versions: msg.versions.map((v) =>
+                    v.id === assistantMessageId
+                      ? { ...v, content: fullText }
+                      : v,
+                  ),
+                };
+              }
+              return msg;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error("ProChat Error:", error);
+        toast.error("Assistant failed to respond.");
+      } finally {
+        setStatus("ready");
       }
-
-      setStatus("ready");
-      setStreamingMessageId(null);
     },
-    [],
+    [messages],
   );
 
-  const addUserMessage = useCallback(
-    (content: string) => {
-      const { left, right } = useWorkspaceStore.getState();
-
-      const userMessage: MessageType = {
+  const handleSuggestionClick = async (suggestion: string) => {
+    if (suggestion === "Analyze current diff") {
+      // Special case for analysis
+      const userMsg: MessageType = {
         key: nanoid(),
         from: "user",
         versions: [
           {
             id: nanoid(),
-            content,
+            content: "Please analyze the differences between these panels.",
           },
         ],
       };
+      setMessages((prev) => [...prev, userMsg]);
+      setStatus("streaming");
 
-      setMessages((prev) => [...prev, userMessage]);
-
-      setTimeout(() => {
-        const assistantMessageId = nanoid();
-        let finalResponse =
-          "I've analyzed the changes. The new code looks more efficient and follows modern React practices.";
-
-        if (
-          content.toLowerCase().includes("analyze") ||
-          content.toLowerCase().includes("diff")
-        ) {
-          finalResponse = `I've performed a deep analysis of your code. 
-            
-The transition from line ${left.code.split("\n").length} to ${right.code.split("\n").length} shows a significant improvement in readability. The reduce pattern is much cleaner than the previous manual loop.`;
-        }
-
-        const assistantMessage: MessageType = {
+      const assistantId = nanoid();
+      setMessages((prev) => [
+        ...prev,
+        {
           key: nanoid(),
           from: "assistant",
-          versions: [
-            {
-              id: assistantMessageId,
-              content: "",
-            },
-          ],
-        };
+          versions: [{ id: assistantId, content: "" }],
+        },
+      ]);
 
-        setMessages((prev) => [...prev, assistantMessage]);
-        streamResponse(assistantMessageId, finalResponse);
-      }, 500);
-    },
-    [streamResponse],
-  );
-
-  const handleSubmit = (message: PromptInputMessage) => {
-    const hasText = Boolean(message.text);
-    const hasAttachments = Boolean(message.files?.length);
-
-    if (!(hasText || hasAttachments)) {
-      return;
+      try {
+        const stream = await aiService.analyzeDiff();
+        let fullText = "";
+        for await (const part of stream) {
+          fullText += typeof part === "string" ? part : part.text || "";
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.versions[0].id === assistantId
+                ? {
+                    ...m,
+                    versions: [{ ...m.versions[0], content: fullText }],
+                  }
+                : m,
+            ),
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setStatus("ready");
+      }
+    } else {
+      addUserMessage(suggestion);
     }
-
-    setStatus("submitted");
-
-    if (message.files?.length) {
-      toast.success("Files attached", {
-        description: `${message.files.length} file(s) attached to message`,
-      });
-    }
-
-    addUserMessage(message.text || "Sent with attachments");
-    setText("");
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
+  const handleSubmit = (message: PromptInputMessage) => {
+    if (!message.text?.trim() && !message.files?.length) return;
+
     setStatus("submitted");
-    addUserMessage(suggestion);
+    addUserMessage(message.text || "Attached files analysis");
+    setText("");
   };
 
   return (
     <div className="relative flex size-full flex-col divide-y overflow-hidden border-l border-border bg-background">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/50 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-muted/30 text-foreground">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="font-semibold text-sm text-foreground tracking-tight">
+                Pro Architect
+              </h2>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold border border-foreground/20 text-foreground/80 uppercase tracking-wider">
+                PRO
+              </span>
+            </div>
+            <p className="text-[10px] text-muted-foreground font-medium">
+              Powered by Advanced Reasoning
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setMessages(initialMessages)}
+            className="p-2 hover:bg-muted/50 text-muted-foreground hover:text-foreground rounded-md transition-colors text-xs font-medium flex items-center gap-1.5 group"
+          >
+            <Trash2 className="w-3.5 h-3.5 group-hover:text-red-400 transition-colors" />
+            <span>Clear</span>
+          </button>
+        </div>
+      </div>
       <Conversation>
         <ConversationContent>
           {messages.map(({ versions, ...message }) => (
@@ -469,7 +487,10 @@ The transition from line ${left.code.split("\n").length} to ${right.code.split("
                 </ModelSelector>
               </PromptInputTools>
               <PromptInputSubmit
-                disabled={!(text.trim() || status) || status === "streaming"}
+                disabled={
+                  !(text.trim() || status === "submitted") ||
+                  status === "streaming"
+                }
                 status={status}
               />
             </PromptInputFooter>
