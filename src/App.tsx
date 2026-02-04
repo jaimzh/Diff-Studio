@@ -6,67 +6,22 @@ import { CodeEditor } from "./components/CodeEditor";
 import { ChatSidebar } from "./components/ChatSidebar";
 import { ProChat } from "./components/ProChat";
 import { Sparkles, MessageSquare } from "lucide-react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Group, Panel, Separator } from "react-resizable-panels";
 import { cn } from "./lib/utils";
-
-const ResizeHandle = ({
-  direction = "horizontal",
-  className = "",
-}: {
-  direction?: "horizontal" | "vertical";
-  className?: string;
-}) => {
-  const isHorizontal = direction === "horizontal";
-  return (
-    <PanelResizeHandle
-      className={cn(
-        "flex items-center justify-center transition-all duration-300 group z-50",
-        isHorizontal
-          ? "w-1.5 hover:w-2 cursor-col-resize"
-          : "h-1.5 hover:h-2 cursor-row-resize",
-        className,
-      )}
-    >
-      <div
-        className={cn(
-          "bg-border/20 group-hover:bg-accent/40 rounded-full transition-all duration-300",
-          isHorizontal
-            ? "w-[2px] h-10 group-hover:h-16"
-            : "h-[2px] w-10 group-hover:w-16",
-        )}
-      />
-    </PanelResizeHandle>
-  );
-};
+import { useWorkspaceStore } from "./store/WorkspaceStore";
 
 function App() {
+  const left = useWorkspaceStore((state) => state.left);
+  const right = useWorkspaceStore((state) => state.right);
+
+  const updatePanel = useWorkspaceStore((state) => state.updatePanel);
+
+  const setCode = useWorkspaceStore((s) => s.setPanelCode);
+  const setLabel = useWorkspaceStore((s) => s.setPanelLabel);
+  const setLanguage = useWorkspaceStore((s) => s.setPanelLanguage);
+
   const [activeTab, setActiveTab] = useState<"editor" | "diff">("editor");
   const [chatMode, setChatMode] = useState<"regular" | "pro">("regular");
-
-  // code state (The code inside)
-  const [leftCode, setLeftCode] = useState(`// Original: Basic loop
-function calculateTotal(items) {
-  let total = 0;
-  for (let i = 0; i < items.length; i++) {
-    total += items[i].price;
-  }
-  return total;
-}`);
-
-  const [rightCode, setRightCode] = useState(`// Optimized: Using Reduce
-function calculateTotal(items) {
-  return items.reduce((acc, item) => {
-    return acc + item.price;
-  }, 0);
-}`);
-
-  // label state
-  const [leftLabel, setLeftLabel] = useState("Current Version");
-  const [rightLabel, setRightLabel] = useState("Modified Version");
-
-  // language state
-  const [leftLanguage, setLeftLanguage] = useState("javascript");
-  const [rightLanguage, setRightLanguage] = useState("javascript");
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-bg-dark">
@@ -142,67 +97,51 @@ function calculateTotal(items) {
         </div>
 
         <div className="flex-1 min-h-0">
-          <PanelGroup direction="horizontal">
+          <Group orientation="horizontal">
             {/* Main Editor Section */}
             <Panel defaultSize={75} minSize={30} className="flex">
-              {activeTab === "editor" ? (
-                <div className="flex-1 h-full px-1">
-                  <CodeEditor
-                    label={leftLabel}
-                    value={leftCode}
-                    onChange={setLeftCode}
-                    onLabelChange={setLeftLabel}
-                    onLanguageChange={setLeftLanguage}
-                    language={leftLanguage}
-                    icon={<LayoutGrid className="w-3.5 h-3.5" />}
-                  />
-                </div>
-              ) : (
-                <PanelGroup direction="horizontal" className="h-full">
+              <div className="flex-1 bg-bg-light/50 rounded-2xl border border-border/50 p-2 overflow-hidden flex flex-col group/editors">
+                <Group orientation="horizontal" className="h-full">
                   <Panel defaultSize={50} minSize={20} className="px-1">
                     <CodeEditor
-                      label={leftLabel}
-                      value={leftCode}
-                      onChange={setLeftCode}
-                      onLabelChange={setLeftLabel}
-                      onLanguageChange={setLeftLanguage}
-                      language={leftLanguage}
+                      label={left.label}
+                      value={left.code}
+                      onChange={(val) => setCode("left", val)}
+                      onLabelChange={(val) => setLabel("left", val)}
+                      onLanguageChange={(val) => setLanguage("left", val)}
+                      language={left.language}
                       icon={<LayoutGrid className="w-3.5 h-3.5" />}
                     />
                   </Panel>
 
-                  <ResizeHandle />
+                  <Separator className="w-2 bg-bg-light hover:bg-border transition-all outline-none focus:outline-none focus:ring-0" />
 
                   <Panel defaultSize={50} minSize={20} className="px-1">
                     <CodeEditor
-                      label={rightLabel}
-                      value={rightCode}
-                      onChange={setRightCode}
-                      onLabelChange={setRightLabel}
-                      onLanguageChange={setRightLanguage}
-                      language={rightLanguage}
+                      label={right.label}
+                      value={right.code}
+                      onChange={(val) => setCode("right", val)}
+                      onLabelChange={(val) => setLabel("right", val)}
+                      onLanguageChange={(val) => setLanguage("right", val)}
+                      language={right.language}
                       icon={<List className="w-3.5 h-3.5" />}
                     />
                   </Panel>
-                </PanelGroup>
-              )}
+                </Group>
+              </div>
             </Panel>
 
-            <ResizeHandle />
+            <Separator className="w-2 bg-transparent hover:bg-border/20 transition-all outline-none focus:outline-none focus:ring-0" />
 
             {/* Chat/AI Section */}
             <Panel
               defaultSize={25}
               minSize={15}
-              className="bg-bg-light/20 rounded-xl border border-border shadow-2xl overflow-hidden ml-1"
+              className="bg-bg-light/20 rounded-xl border border-border shadow-2xl overflow-hidden"
             >
-              {chatMode === "regular" ? (
-                <ChatSidebar leftCode={leftCode} rightCode={rightCode} />
-              ) : (
-                <ProChat leftCode={leftCode} rightCode={rightCode} />
-              )}
+              {chatMode === "regular" ? <ChatSidebar /> : <ProChat />}
             </Panel>
-          </PanelGroup>
+          </Group>
         </div>
       </main>
     </div>

@@ -68,6 +68,7 @@ import type { ToolUIPart } from "ai";
 import { CheckIcon, GlobeIcon, MicIcon } from "lucide-react";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
+import { useWorkspaceStore } from "@/store/WorkspaceStore";
 
 interface MessageType {
   key: string;
@@ -189,12 +190,7 @@ const PromptInputAttachmentsDisplay = () => {
   );
 };
 
-export interface ProChatProps {
-  leftCode: string;
-  rightCode: string;
-}
-
-export const ProChat: React.FC<ProChatProps> = ({ leftCode, rightCode }) => {
+export const ProChat: React.FC = () => {
   const [model, setModel] = useState<string>(models[0].id);
   const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
   const [text, setText] = useState<string>("");
@@ -248,6 +244,8 @@ export const ProChat: React.FC<ProChatProps> = ({ leftCode, rightCode }) => {
 
   const addUserMessage = useCallback(
     (content: string) => {
+      const { left, right } = useWorkspaceStore.getState();
+
       const userMessage: MessageType = {
         key: nanoid(),
         from: "user",
@@ -272,7 +270,7 @@ export const ProChat: React.FC<ProChatProps> = ({ leftCode, rightCode }) => {
         ) {
           finalResponse = `I've performed a deep analysis of your code. 
             
-The transition from line ${leftCode.split("\n").length} to ${rightCode.split("\n").length} shows a significant improvement in readability. The reduce pattern is much cleaner than the previous manual loop.`;
+The transition from line ${left.code.split("\n").length} to ${right.code.split("\n").length} shows a significant improvement in readability. The reduce pattern is much cleaner than the previous manual loop.`;
         }
 
         const assistantMessage: MessageType = {
@@ -290,7 +288,7 @@ The transition from line ${leftCode.split("\n").length} to ${rightCode.split("\n
         streamResponse(assistantMessageId, finalResponse);
       }, 500);
     },
-    [streamResponse, leftCode, rightCode],
+    [streamResponse],
   );
 
   const handleSubmit = (message: PromptInputMessage) => {

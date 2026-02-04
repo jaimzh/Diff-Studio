@@ -9,16 +9,9 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { aiService, type Message } from "../services/aiService";
+import { MessageResponse } from "./ai-elements/message";
 
-interface ChatSidebarProps {
-  leftCode: string;
-  rightCode: string;
-}
-
-export const ChatSidebar: React.FC<ChatSidebarProps> = ({
-  leftCode,
-  rightCode,
-}) => {
+export const ChatSidebar: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -45,12 +38,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
     setIsTyping(true);
 
     try {
-      const stream = await aiService.chatWithContext(
-        leftCode,
-        rightCode,
-        messages,
-        input,
-      );
+      const stream = await aiService.chatWithContext(messages, input);
 
       const assistantId = (Date.now() + 1).toString();
       const assistantMessage: Message = {
@@ -63,7 +51,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
       let fullText = "";
       for await (const part of stream) {
-        fullText += part.text || part;
+        fullText += typeof part === "string" ? part : part.text || "";
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId ? { ...m, text: fullText } : m,
@@ -81,7 +69,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
     setIsTyping(true);
 
     try {
-      const stream = await aiService.analyzeDiff(leftCode, rightCode);
+      const stream = await aiService.analyzeDiff();
 
       const assistantId = (Date.now() + 1).toString();
       const assistantMessage: Message = {
@@ -95,7 +83,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
       let fullText = "";
 
       for await (const part of stream) {
-        fullText += part.text || part;
+        fullText += typeof part === "string" ? part : part.text || "";
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId ? { ...m, text: fullText } : m,
@@ -208,7 +196,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               }
             `}
             >
-              <div className="whitespace-pre-wrap">{m.text}</div>
+              <MessageResponse>{m.text}</MessageResponse>
             </div>
           </div>
         ))}
