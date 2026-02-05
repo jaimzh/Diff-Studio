@@ -20,15 +20,17 @@ Diff Studio is a lightweight, client-side tool for comparing code or text side b
 
 ## Project Structure
 
+```bash
 src/
-├── components/
-│ ├── chat/ # Chat sidebar & AI messages
-│ ├── editor/ # Code editor & Diff viewer
-│ ├── layout/ # Layout & structural components
-│ └── ui/ # Generic UI components
-├── services/ # AI service & API logic
-├── store/ # Global state management
-└── utils/ # Helper functions
+├── components/   # UI Building Blocks
+│   ├── chat/
+│   ├── editor/
+│   ├── layout/
+│   └── ui/
+├── services/     # API Integration
+├── store/        # State Management
+└── utils/        # Helpers
+```
 
 ## Getting Started
 
