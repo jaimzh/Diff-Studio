@@ -16,6 +16,8 @@
 
   --border: hsl(0, 0%, 31%);
   --accent: oklch(0.97 0 0);
+  --highlight: rgba(255, 255, 0, 0.15);
+  --highlight-border: rgba(255, 255, 0, 0.5);
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -158,6 +160,8 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+  --highlight: rgba(255, 255, 0, 0.1);
+  --highlight-border: rgba(255, 255, 0, 0.3);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -180,4 +184,15 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* AI Highlight Styles */
+.highlight-left {
+  background-color: rgba(99, 102, 241, 0.15); /* Indigo */
+  border-left: 2px solid rgba(99, 102, 241, 0.5);
+}
+
+.highlight-right {
+  background-color: rgba(16, 185, 129, 0.15); /* Emerald */
+  border-left: 2px solid rgba(16, 185, 129, 0.5);
 }

@@ -8,20 +8,27 @@ export interface Message {
 }
 
 export const aiService = {
-  // Helper to get formatted context from the store
   getWorkspaceContext() {
     const { left, right } = useWorkspaceStore.getState();
+
+    const addLineNumbers = (code: string) =>
+      code
+        .split("\n")
+        .map((line, i) => `${i + 1}: ${line}`)
+        .join("\n");
+
     return `
 WORKSPACE CONTEXT:
 [Left Panel: "${left.label}" | Language: ${left.language}]
-${left.code}
+${addLineNumbers(left.code)}
 
 [Right Panel: "${right.label}" | Language: ${right.language}]
-${right.code}
+${addLineNumbers(right.code)}
     `.trim();
   },
 
   async chatWithContext(messages: Message[], input: string) {
+    const { left, right } = useWorkspaceStore.getState();
     const context = this.getWorkspaceContext();
     const history = messages
       .map((m) => `${m.role.toUpperCase()}: ${m.text}`)
@@ -29,49 +36,53 @@ ${right.code}
 
     const systemPrompt = `
       You are an expert software engineer and code reviewer.
-      
+
       ${context}
 
       CONVERSATION HISTORY:
       ${history}
 
       INSTRUCTIONS:
-      - Analyze the code above.
-      - Answer the user's latest query accurately and professionally.
-      - Use markdown formatting for code blocks.
+      - Analyze the code provided in the context above.
+      - **Always refer to the code sections by their specific labels** (e.g., refer to "${left.label}" and "${right.label}").
+      - **CRITICAL: When discussing logic, YOU MUST USE HIGHLIGHT TAGS.**
+        - Syntax: [[left|line 10-15]] or [[right|line 4]]
+        - These tags create interactive buttons; use them often and precisely.
+        - Example: "The variable is initialized here [[left|line 2]] and updated inside this loop [[left|line 4-8]]."
+        - Always double-check your line numbers against the context code provided.
+      - Answer user queries accurately and professionally.
       - User's Question: "${input}"
     `;
 
     return await puter.ai.chat(systemPrompt, {
       stream: true,
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
     });
   },
 
   async analyzeDiff() {
     const { left, right } = useWorkspaceStore.getState();
     const analysisPrompt = `
-      You are a senior dev. Compare these two versions:
+      You are a senior developer. Compare these two versions:
       
       VERSION A (${left.label}):
-      \`\`\`${left.language}
       ${left.code}
-      \`\`\`
 
       VERSION B (${right.label}):
-      \`\`\`${right.language}
       ${right.code}
-      \`\`\`
 
       TASK:
-      - Provide a concise summary of the logic changes.
+      - Compare the logic between "${left.label}" and "${right.label}".
+      - **YOU MUST USE HIGHLIGHT TAGS for every point of comparison.**
+        - Syntax: [[left|line X-Y]] or [[right|line Z]]
+        - Example: "In "${left.label}", the loop starts at [[left|line 10]]. In "${right.label}", it's replaced by a map at [[right|line 12]]."
       - Highlight improvements in performance, security, or readability.
-      - Flag any regression or bugs you notice.
+      - Provide a concise summary.
     `;
 
     return await puter.ai.chat(analysisPrompt, {
       stream: true,
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
     });
   },
 };

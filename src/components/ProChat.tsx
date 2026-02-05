@@ -22,6 +22,7 @@ import {
   MessageBranchSelector,
   MessageContent,
   MessageResponse,
+  MessageThinking,
 } from "@/components/ai-elements/message";
 import {
   ModelSelector,
@@ -70,6 +71,7 @@ import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { useWorkspaceStore } from "@/store/WorkspaceStore";
 import { aiService, type Message as AIMessage } from "@/services/aiService";
+import { parseAndApplyHighlights } from "@/utils/highlightParser";
 
 interface MessageType {
   key: string;
@@ -93,19 +95,7 @@ interface MessageType {
   }[];
 }
 
-const initialMessages: MessageType[] = [
-  {
-    key: nanoid(),
-    from: "assistant",
-    versions: [
-      {
-        id: nanoid(),
-        content:
-          "I'm your **Pro Assistant**. I have full access to your workspace context and can help with deep architecture reviews or complex refactoring. What's on your mind?",
-      },
-    ],
-  },
-];
+const initialMessages: MessageType[] = [];
 
 const models = [
   {
@@ -139,7 +129,7 @@ const models = [
 ];
 
 const suggestions = [
-  "Analyze current diff",
+  "Run Deep Analysis",
   "Suggest optimizations",
   "Check for security bugs",
   "Refactor to Clean Code",
@@ -183,6 +173,11 @@ export const ProChat: React.FC = () => {
 
   const addUserMessage = useCallback(
     async (content: string) => {
+      // Clear previous highlights and reset scroll tracker
+      const store = useWorkspaceStore.getState();
+      store.setHighlights([]);
+      (store as any)._lastScrollRequest = null;
+
       // 1. Add user message to UI
       const userMessage: MessageType = {
         key: nanoid(),
@@ -219,6 +214,9 @@ export const ProChat: React.FC = () => {
         for await (const part of stream) {
           fullText += typeof part === "string" ? part : part.text || "";
 
+          // Parse highlights and get clean content for display
+          const displayContent = parseAndApplyHighlights(fullText);
+
           setMessages((prev) =>
             prev.map((msg) => {
               if (msg.versions.some((v) => v.id === assistantMessageId)) {
@@ -226,7 +224,7 @@ export const ProChat: React.FC = () => {
                   ...msg,
                   versions: msg.versions.map((v) =>
                     v.id === assistantMessageId
-                      ? { ...v, content: fullText }
+                      ? { ...v, content: displayContent }
                       : v,
                   ),
                 };
@@ -246,7 +244,12 @@ export const ProChat: React.FC = () => {
   );
 
   const handleSuggestionClick = async (suggestion: string) => {
-    if (suggestion === "Analyze current diff") {
+    // Clear previous highlights and reset scroll tracker
+    const store = useWorkspaceStore.getState();
+    store.setHighlights([]);
+    (store as any)._lastScrollRequest = null;
+
+    if (suggestion === "Run Deep Analysis") {
       // Special case for analysis
       const userMsg: MessageType = {
         key: nanoid(),
@@ -276,12 +279,16 @@ export const ProChat: React.FC = () => {
         let fullText = "";
         for await (const part of stream) {
           fullText += typeof part === "string" ? part : part.text || "";
+
+          // Parse highlights and get clean content for display
+          const displayContent = parseAndApplyHighlights(fullText);
+
           setMessages((prev) =>
             prev.map((m) =>
               m.versions[0].id === assistantId
                 ? {
                     ...m,
-                    versions: [{ ...m.versions[0], content: fullText }],
+                    versions: [{ ...m.versions[0], content: displayContent }],
                   }
                 : m,
             ),
@@ -328,7 +335,12 @@ export const ProChat: React.FC = () => {
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => setMessages(initialMessages)}
+            onClick={() => {
+              setMessages(initialMessages);
+              const store = useWorkspaceStore.getState();
+              store.setHighlights([]);
+              (store as any)._lastScrollRequest = null;
+            }}
             className="p-2 hover:bg-muted/50 text-muted-foreground hover:text-foreground rounded-md transition-colors text-xs font-medium flex items-center gap-1.5 group"
           >
             <Trash2 className="w-3.5 h-3.5 group-hover:text-red-400 transition-colors" />
@@ -337,51 +349,69 @@ export const ProChat: React.FC = () => {
         </div>
       </div>
       <Conversation>
-        <ConversationContent>
-          {messages.map(({ versions, ...message }) => (
-            <MessageBranch defaultBranch={0} key={message.key}>
-              <MessageBranchContent>
-                {versions.map((version) => (
-                  <Message from={message.from} key={version.id}>
-                    <div>
-                      {message.sources?.length && (
-                        <Sources>
-                          <SourcesTrigger count={message.sources.length} />
-                          <SourcesContent>
-                            {message.sources.map((source) => (
-                              <Source
-                                href={source.href}
-                                key={source.href}
-                                title={source.title}
-                              />
-                            ))}
-                          </SourcesContent>
-                        </Sources>
-                      )}
-                      {message.reasoning && (
-                        <Reasoning duration={message.reasoning.duration}>
-                          <ReasoningTrigger />
-                          <ReasoningContent>
-                            {message.reasoning.content}
-                          </ReasoningContent>
-                        </Reasoning>
-                      )}
-                      <MessageContent>
-                        <MessageResponse>{version.content}</MessageResponse>
-                      </MessageContent>
-                    </div>
-                  </Message>
-                ))}
-              </MessageBranchContent>
-              {versions.length > 1 && (
-                <MessageBranchSelector from={message.from}>
-                  <MessageBranchPrevious />
-                  <MessageBranchPage />
-                  <MessageBranchNext />
-                </MessageBranchSelector>
-              )}
-            </MessageBranch>
-          ))}
+        <ConversationContent className={messages.length === 0 ? "h-full" : ""}>
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full w-full">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/30 border border-border/40 shadow-sm backdrop-blur-sm mb-4">
+                <Sparkles
+                  className="h-6 w-6 text-foreground/70"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <p className="text-sm font-medium text-muted-foreground">
+                How can I help you today?
+              </p>
+            </div>
+          ) : (
+            messages.map(({ versions, ...message }) => (
+              <MessageBranch defaultBranch={0} key={message.key}>
+                <MessageBranchContent>
+                  {versions.map((version) => (
+                    <Message from={message.from} key={version.id}>
+                      <div>
+                        {message.sources?.length && (
+                          <Sources>
+                            <SourcesTrigger count={message.sources.length} />
+                            <SourcesContent>
+                              {message.sources.map((source) => (
+                                <Source
+                                  href={source.href}
+                                  key={source.href}
+                                  title={source.title}
+                                />
+                              ))}
+                            </SourcesContent>
+                          </Sources>
+                        )}
+                        {message.reasoning && (
+                          <Reasoning duration={message.reasoning.duration}>
+                            <ReasoningTrigger />
+                            <ReasoningContent>
+                              {message.reasoning.content}
+                            </ReasoningContent>
+                          </Reasoning>
+                        )}
+                        <MessageContent>
+                          {version.content ? (
+                            <MessageResponse>{version.content}</MessageResponse>
+                          ) : (
+                            message.from === "assistant" && <MessageThinking />
+                          )}
+                        </MessageContent>
+                      </div>
+                    </Message>
+                  ))}
+                </MessageBranchContent>
+                {versions.length > 1 && (
+                  <MessageBranchSelector from={message.from}>
+                    <MessageBranchPrevious />
+                    <MessageBranchPage />
+                    <MessageBranchNext />
+                  </MessageBranchSelector>
+                )}
+              </MessageBranch>
+            ))
+          )}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>

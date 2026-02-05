@@ -23,6 +23,19 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
 };
 
+export const MessageThinking = () => (
+  <div className="flex items-center gap-2.5 px-2 py-1.5 text-muted-foreground/50">
+    <div className="flex items-center gap-1">
+      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-duration:0.8s] [animation-delay:-0.3s]" />
+      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-duration:0.8s] [animation-delay:-0.15s]" />
+      <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-duration:0.8s]" />
+    </div>
+    <span className="text-[10px] font-semibold uppercase tracking-wider opacity-60">
+      Thinking...
+    </span>
+  </div>
+);
+
 export const Message = ({ className, from, ...props }: MessageProps) => (
   <div
     className={cn(
@@ -302,6 +315,7 @@ export const MessageBranchPage = ({
 export type MessageResponseProps = ComponentProps<typeof Streamdown>;
 
 import { CodeBlock } from "./code-block";
+import { useWorkspaceStore } from "@/store/WorkspaceStore";
 
 // ... (other imports)
 
@@ -315,6 +329,46 @@ export const MessageResponse = memo(
       plugins={{ code, mermaid, math, cjk }}
       components={{
         pre: ({ children }) => <>{children}</>,
+        a: ({ href, children }) => {
+          if (href?.startsWith("https://highlight.me/")) {
+            const parts = href.replace("https://highlight.me/", "").split("/");
+            const side = parts[0] as "left" | "right";
+            const lineRange = parts[1];
+            const rangeParts = lineRange.split("-");
+            const start = parseInt(rangeParts[0], 10);
+            const end = rangeParts[1] ? parseInt(rangeParts[1], 10) : start;
+
+            return (
+              <button
+                key={href}
+                onClick={() => {
+                  const store = useWorkspaceStore.getState();
+                  store.requestScroll(side, start);
+                  // Also re-apply this specific highlight in case it was cleared
+                  store.setHighlights([{ side, lines: [start, end] }]);
+                }}
+                className={cn(
+                  "mx-0.5 inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95",
+                  side === "left"
+                    ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/30"
+                    : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30",
+                )}
+              >
+                {children}
+              </button>
+            );
+          }
+          return (
+            <a
+              className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors"
+              href={href}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {children}
+            </a>
+          );
+        },
         code: ({ className, children, ...props }) => {
           const match = /language-(\w+)/.exec(className || "");
           const codeContent = String(children).replace(/\n$/, "");

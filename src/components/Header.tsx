@@ -1,24 +1,74 @@
 import React from "react";
-import { Sparkles, Code2, Zap, Space, PlaneTakeoff, SolarPanelIcon } from "lucide-react";
+import { LayoutGrid, List, MessageSquare, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  activeTab: "editor" | "diff";
+  setActiveTab: (tab: "editor" | "diff") => void;
+  chatMode: "regular" | "pro";
+  setChatMode: (mode: "regular" | "pro") => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  activeTab,
+  setActiveTab,
+  chatMode,
+  setChatMode,
+}) => {
   return (
-    <header className="border-b border-border bg-bg-base/50  sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="bg-accent p-2 rounded">
-            <SolarPanelIcon className="w-5 h-5 text-bg-dark" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-text-base leading-none tracking-tight">
-              Diff-Space
-            </h1>
-            <p className="text-[10px] text-text-muted font-bold tracking-[0.2em] mt-1 uppercase">
-              Compare & Analyze Code
-            </p>
+    <div>
+      <div className="flex flex-row justify-between items-center  gap-4 px-4">
+        <div>
+          <h2 className="text-xl font-bold text-text-base tracking-tight uppercase">
+           Diff-Space
+          </h2>
+          <p className="text-text-muted text-[11px] font-semibold uppercase tracking-widest mt-1">
+            AI Code Review & Comparison
+          </p>
+        </div>
+
+        <div className="bg-bg-light/50 p-1 rounded-md border border-border flex items-center">
+          <Button
+            variant={activeTab === "editor" ? "tabActive" : "tab"}
+            size="tab"
+            onClick={() => setActiveTab("editor")}
+          >
+            <LayoutGrid className="w-3.5 h-3.5 mr-2" />
+            Editor
+          </Button>
+          <Button
+            variant={activeTab === "diff" ? "tabActive" : "tab"}
+            size="tab"
+            onClick={() => setActiveTab("diff")}
+          >
+            <List className="w-3.5 h-3.5 mr-2" />
+            Visual Diff
+          </Button>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="bg-bg-light/50 p-1 rounded-md border border-border flex items-center ">
+            <Button
+              variant={chatMode === "regular" ? "tabActive" : "tab"}
+              size="tab"
+              onClick={() => setChatMode("regular")}
+              className="h-8 px-3"
+            >
+              <MessageSquare className="w-3 h-3 mr-1.5" />
+              Regular
+            </Button>
+            <Button
+              variant={chatMode === "pro" ? "tabActive" : "tab"}
+              size="tab"
+              onClick={() => setChatMode("pro")}
+              className="h-8 px-3"
+            >
+              <Sparkles className="w-3 h-3 mr-1.5" />
+              Pro Chat
+            </Button>
           </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 };

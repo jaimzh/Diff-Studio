@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { aiService, type Message } from "../services/aiService";
+import { useWorkspaceStore } from "@/store/WorkspaceStore";
+import { parseAndApplyHighlights } from "@/utils/highlightParser";
 import { MessageResponse } from "./ai-elements/message";
 
 export const ChatSidebar: React.FC = () => {
@@ -26,6 +28,11 @@ export const ChatSidebar: React.FC = () => {
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
+
+    // Clear previous highlights and reset scroll tracker
+    const store = useWorkspaceStore.getState();
+    store.setHighlights([]);
+    (store as any)._lastScrollRequest = null;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -52,9 +59,13 @@ export const ChatSidebar: React.FC = () => {
       let fullText = "";
       for await (const part of stream) {
         fullText += typeof part === "string" ? part : part.text || "";
+
+        // Parse highlights and get clean content for display
+        const displayContent = parseAndApplyHighlights(fullText);
+
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId ? { ...m, text: fullText } : m,
+            m.id === assistantId ? { ...m, text: displayContent } : m,
           ),
         );
       }
@@ -67,6 +78,11 @@ export const ChatSidebar: React.FC = () => {
 
   const startAnalysis = async () => {
     setIsTyping(true);
+
+    // Clear previous highlights and reset scroll tracker
+    const store = useWorkspaceStore.getState();
+    store.setHighlights([]);
+    (store as any)._lastScrollRequest = null;
 
     try {
       const stream = await aiService.analyzeDiff();
@@ -84,9 +100,13 @@ export const ChatSidebar: React.FC = () => {
 
       for await (const part of stream) {
         fullText += typeof part === "string" ? part : part.text || "";
+
+        // Parse highlights and get clean content for display
+        const displayContent = parseAndApplyHighlights(fullText);
+
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId ? { ...m, text: fullText } : m,
+            m.id === assistantId ? { ...m, text: displayContent } : m,
           ),
         );
       }

@@ -6,9 +6,20 @@ interface EditorPanel {
   code: string;
 }
 
+export interface Highlight {
+  side: "left" | "right";
+  lines: [number, number]; // [start, end]
+}
+
 interface WorkspaceState {
   left: EditorPanel;
   right: EditorPanel;
+
+  // NEW: Highlights state
+  activeHighlights: Highlight[];
+  scrollRequest: { side: "left" | "right"; line: number } | null;
+  setHighlights: (highlights: Highlight[]) => void;
+  requestScroll: (side: "left" | "right", line: number) => void;
 
   setPanelCode: (side: "left" | "right", code: string) => void;
   setPanelLanguage: (side: "left" | "right", language: string) => void;
@@ -29,6 +40,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     language: "typescript",
     code: `// Clean, functional approach\nconst numbers = [1, 2, 3];\n\nconst doubled = numbers.map(n => n * 2);`,
   },
+
+  activeHighlights: [],
+  scrollRequest: null,
+  setHighlights: (highlights) => set({ activeHighlights: highlights }),
+  requestScroll: (side, line) => set({ scrollRequest: { side, line } }),
 
   setPanelCode: (side, code) =>
     set((state) => ({
