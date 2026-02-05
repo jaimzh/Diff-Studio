@@ -130,7 +130,6 @@ export const ChatSidebar: React.FC = () => {
       md:relative md:bottom-auto md:right-auto md:h-full md:w-full
     `}
     >
-      {/* Chat Header */}
       <div className="px-4 py-3 border-b border-border bg-bg-light/80 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded bg-accent flex items-center justify-center">
@@ -165,7 +164,6 @@ export const ChatSidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-4 space-y-6 bg-black/20"
@@ -235,7 +233,6 @@ export const ChatSidebar: React.FC = () => {
         )}
       </div>
 
-      {/* Chat Input */}
       <div className="p-4 bg-bg-light border-t border-border">
         <div className="relative">
           <textarea

@@ -26,7 +26,6 @@ function App() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-bg-dark">
       <NotForMobile />
-      {/* <Header /> */}
       <main className="flex-1 flex flex-col p-4 space-y-2 overflow-hidden">
         <Header
           activeTab={activeTab}
@@ -37,7 +36,6 @@ function App() {
 
         <div className="flex-1 min-h-0">
           <Group orientation="horizontal">
-            {/* Main Editor Section */}
             <Panel defaultSize={75} minSize={30} className="flex">
               <div className="flex-1 bg-bg-light/50 rounded-2xl border border-border/50 p-2 overflow-hidden flex flex-col group/editors">
                 {activeTab === "editor" ? (
@@ -84,7 +82,6 @@ function App() {
 
             <Separator className="w-2 bg-transparent hover:bg-border/20 transition-all outline-none focus:outline-none focus:ring-0" />
 
-            {/* Chat/AI Section */}
             <Panel
               defaultSize={25}
               minSize={15}

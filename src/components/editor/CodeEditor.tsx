@@ -117,7 +117,7 @@ export const CodeEditor = ({
   return (
     <div className="flex flex-col h-full rounded-xl border border-border bg-bg-light shadow-2xl overflow-hidden relative group">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-bg-light z-10"></div>
-      {/* header */}
+
       <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-bg-light/50">
         <div className="flex items-center gap-2">
           {icon && (
@@ -130,7 +130,7 @@ export const CodeEditor = ({
               type="text"
               value={label}
               onChange={(e) => onLabelChange(e.target.value)}
-              className="bg-transparent rounded-4xl border-none outline-none focus:ring-0 text-text-muted focus:text-text-base transition-colors cursor-edit"
+              className="bg-transparent rounded-4xl border-none outline-none focus:ring-0 text-text-muted focus:text-text-base transition-colors cursor-text"
             />
           </span>
         </div>
@@ -180,7 +180,6 @@ export const CodeEditor = ({
         </div>
       </div>
 
-      {/* editor */}
       <div className="flex-1 relative min-h-0 bg-bg-dark overflow-hidden">
         <Editor
           value={value}
