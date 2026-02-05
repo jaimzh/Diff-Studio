@@ -1,73 +1,47 @@
-# React + TypeScript + Vite
+# Diff-Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Diff Studio is a lightweight, client-side tool for comparing code or text side by side, with an AI-powered assistant that helps you understand, analyze, and interact with your content. It’s designed to be fast, private, and ephemeral, (fancy word for no data is stored or sent to any server). Everything happens locally in your browser.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Split-Pane Code Editor**: Edit two files side-by-side with full syntax highlighting (Monaco Editor).
+- **Visual Diff Viewer**: Toggle to a diff view to instantly see insertions, deletions, and modifications between the two panes.
+- **AI Integration**: A built-in chat assistant that can analyze the code in your active workspace, identifying bugs, security issues, or performance improvements.
+- **Intelligent Highlighting**: The AI can programmatically highlight specific lines of code in your editor to point out exactly what it is referring to.
+- **Responsive Design**: Designed primarily for desktop workflows, with checks for mobile compatibility.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: Tailwind CSS, Lucide React (Icons)
+- **Editor**: Monaco Editor (@monaco-editor/react)
+- **State Management**: Zustand
+- **AI Service**: Puter.js (for backend-less AI integration)
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+src/
+├── components/
+│ ├── chat/ # Chat sidebar & AI messages
+│ ├── editor/ # Code editor & Diff viewer
+│ ├── layout/ # Layout & structural components
+│ └── ui/ # Generic UI components
+├── services/ # AI service & API logic
+├── store/ # Global state management
+└── utils/ # Helper functions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Install dependencies:
+   npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. Start the development server:
+   npm run dev
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. Open your browser to the local server address (usually http://localhost:5173).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Editors**: Paste or type code into the left (Original) and right (Modified) panels.
+2. **Diff View**: Click "Visual Diff" in the header to see line-by-line differences.
+3. **AI Assistant**: Open the sidebar (Regular or Pro Chat) and ask the assistant to analyze your code. It will read the content of both panels to provide context-aware answers.
