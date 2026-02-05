@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Header } from "./components/Header";
-import { DiffViewer } from "./components/DiffViewer";
-import { CodeEditor } from "./components/CodeEditor";
-import { ChatSidebar } from "./components/ChatSidebar";
-import { ProChat } from "./components/ProChat";
-import { NotForMobile } from "./components/NotForMobile";
+import { Header } from "./components/layout/Header";
+import { DiffViewer } from "./components/editor/DiffViewer";
+import { CodeEditor } from "./components/editor/CodeEditor";
+import { ChatSidebar } from "./components/chat/ChatSidebar";
+import { ProChat } from "./components/chat/ProChat";
+import { NotForMobile } from "./components/layout/NotForMobile";
 import { LayoutGrid, List } from "lucide-react";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import { cn } from "./lib/utils";

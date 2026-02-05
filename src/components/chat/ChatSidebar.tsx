@@ -8,7 +8,7 @@ import {
   User,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { aiService, type Message } from "../services/aiService";
+import { aiService, type Message } from "../../services/aiService";
 import { useWorkspaceStore } from "@/store/WorkspaceStore";
 import { parseAndApplyHighlights } from "@/utils/highlightParser";
 import { MessageResponse } from "./ai-elements/message";

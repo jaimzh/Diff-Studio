@@ -6,12 +6,12 @@ import {
   AttachmentPreview,
   AttachmentRemove,
   Attachments,
-} from "@/components/ai-elements/attachments";
+} from "./ai-elements/attachments";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from "@/components/ai-elements/conversation";
+} from "./ai-elements/conversation";
 import {
   Message,
   MessageBranch,
@@ -23,7 +23,7 @@ import {
   MessageContent,
   MessageResponse,
   MessageThinking,
-} from "@/components/ai-elements/message";
+} from "./ai-elements/message";
 import {
   ModelSelector,
   ModelSelectorContent,
@@ -36,7 +36,7 @@ import {
   ModelSelectorLogoGroup,
   ModelSelectorName,
   ModelSelectorTrigger,
-} from "@/components/ai-elements/model-selector";
+} from "./ai-elements/model-selector";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -52,19 +52,19 @@ import {
   PromptInputTextarea,
   PromptInputTools,
   usePromptInputAttachments,
-} from "@/components/ai-elements/prompt-input";
+} from "./ai-elements/prompt-input";
 import {
   Reasoning,
   ReasoningContent,
   ReasoningTrigger,
-} from "@/components/ai-elements/reasoning";
+} from "./ai-elements/reasoning";
 import {
   Source,
   Sources,
   SourcesContent,
   SourcesTrigger,
-} from "@/components/ai-elements/sources";
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
+} from "./ai-elements/sources";
+import { Suggestion, Suggestions } from "./ai-elements/suggestion";
 import type { ToolUIPart } from "ai";
 import { CheckIcon, GlobeIcon, MicIcon, Sparkles, Trash2 } from "lucide-react";
 import { nanoid } from "nanoid";

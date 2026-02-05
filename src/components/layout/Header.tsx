@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-row justify-between items-center  gap-4 px-4">
         <div>
           <h2 className="text-xl font-bold text-text-base tracking-tight uppercase">
-           Diff-Space
+           Diff-Studio
           </h2>
           <p className="text-text-muted text-[11px] font-semibold uppercase tracking-widest mt-1">
             AI Code Review & Comparison
