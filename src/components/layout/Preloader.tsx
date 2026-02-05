@@ -1,0 +1,84 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Sparkles, Terminal } from "lucide-react";
+
+export const Preloader = () => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          clearInterval(timer);
+          return 100;
+        }
+        const diff = Math.random() * 15;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 150);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#09090b] text-white"
+    >
+      <div className="relative flex flex-col items-center">
+        {/* Central Icon Area */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 flex items-center justify-center mb-8"
+        >
+          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+            <Terminal className="w-8 h-8 text-white/80" strokeWidth={1.5} />
+          </div>
+        </motion.div>
+
+        {/* Text Content */}
+        <div className="text-center space-y-2 z-10">
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl font-bold tracking-[0.2em] uppercase"
+          >
+            Diff Studio
+          </motion.h1>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 0.4 }}
+            transition={{ delay: 0.3 }}
+            className="text-[10px] uppercase tracking-[0.4em] font-medium"
+          >
+            Initializing
+          </motion.p>
+        </div>
+
+        {/* Progress Bar Container */}
+        <div className="mt-12 w-48 h-[2px] bg-white/5 rounded-full overflow-hidden relative z-10">
+          <motion.div
+            className="absolute left-0 top-0 h-full bg-white/40"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+
+        {/* Loading Percentage Text */}
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          className="mt-4 text-[10px] font-mono tabular-nums"
+        >
+          {Math.round(progress)}%
+        </motion.span>
+      </div>
+    </motion.div>
+  );
+};
