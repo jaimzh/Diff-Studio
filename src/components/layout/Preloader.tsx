@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, Terminal } from "lucide-react";
+import { motion } from "motion/react";
+import { Terminal } from "lucide-react";
 
 export const Preloader = () => {
   const [progress, setProgress] = useState(0);
