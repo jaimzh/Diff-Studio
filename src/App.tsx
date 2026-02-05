@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Header } from "./components/layout/Header";
 import { DiffViewer } from "./components/editor/DiffViewer";
 import { CodeEditor } from "./components/editor/CodeEditor";
@@ -7,14 +7,11 @@ import { ProChat } from "./components/chat/ProChat";
 import { NotForMobile } from "./components/layout/NotForMobile";
 import { LayoutGrid, List } from "lucide-react";
 import { Group, Panel, Separator } from "react-resizable-panels";
-import { cn } from "./lib/utils";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 
 function App() {
   const left = useWorkspaceStore((state) => state.left);
   const right = useWorkspaceStore((state) => state.right);
-
-  const updatePanel = useWorkspaceStore((state) => state.updatePanel);
 
   const setCode = useWorkspaceStore((s) => s.setPanelCode);
   const setLabel = useWorkspaceStore((s) => s.setPanelLabel);
