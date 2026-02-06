@@ -121,7 +121,7 @@ export const CodeEditor = ({
       <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-bg-light/50">
         <div className="flex items-center gap-2">
           {icon && (
-            <div className="text-text-muted group-hover:text-accent transition-colors">
+            <div className="text-text-muted ">
               {icon}
             </div>
           )}

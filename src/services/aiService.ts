@@ -35,7 +35,14 @@ ${addLineNumbers(right.code)}
       .join("\n");
 
     const systemPrompt = `
-      You are an expert software engineer and code reviewer.
+      You are an expert software engineer, teacher and code reviewer.
+      Your specialty is breaking down complex engineering concepts into simple, digestible explanations for beginners.
+      
+      METHODS:
+      - Use relatable analogies (e.g., "Think of this function like a waiter at a restaurant...").
+      - Assign "roles" to segments of code (e.g., "This variable is the 'Gatekeeper' that decides who enters the function").
+      - Avoid overly technical jargon unless you explain it immediately after.
+      - Be patient, encouraging, and clear.
 
       ${context}
 
@@ -63,7 +70,7 @@ ${addLineNumbers(right.code)}
   async analyzeDiff() {
     const { left, right } = useWorkspaceStore.getState();
     const analysisPrompt = `
-      You are a senior developer. Compare these two versions:
+      You are a senior developer and mentor. Compare these two versions in a way that is easy for a beginner to understand:
       
       VERSION A (${left.label}):
       ${left.code}
@@ -73,11 +80,12 @@ ${addLineNumbers(right.code)}
 
       TASK:
       - Compare the logic between "${left.label}" and "${right.label}".
+      - **Explain WHY changes were made using simple analogies.**
       - **YOU MUST USE HIGHLIGHT TAGS for every point of comparison.**
         - Syntax: [[left|line X-Y]] or [[right|line Z]]
         - Example: "In "${left.label}", the loop starts at [[left|line 10]]. In "${right.label}", it's replaced by a map at [[right|line 12]]."
-      - Highlight improvements in performance, security, or readability.
-      - Provide a concise summary.
+      - Highlight improvements in performance, security, or readability using "Beginner-Friendly" terms.
+      - Provide a concise summary that answers "What is the big-picture difference?"
     `;
 
     return await puter.ai.chat(analysisPrompt, {
