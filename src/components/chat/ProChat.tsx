@@ -329,7 +329,7 @@ export const ProChat: React.FC = () => {
               </span>
             </div>
             <p className="text-[10px] text-muted-foreground font-medium">
-              Powered by Advanced Reasoning
+              Powered by Puter.js
             </p>
           </div>
         </div>
