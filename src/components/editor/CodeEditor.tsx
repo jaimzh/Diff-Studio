@@ -83,7 +83,7 @@ export const CodeEditor = ({
     const editor = editorRef.current;
     editor.revealLineInCenter(scrollRequest.line);
 
-    // Clear the request once handled
+  
     setTimeout(() => {
       const current = useWorkspaceStore.getState().scrollRequest;
       if (current?.line === scrollRequest.line && current?.side === side) {

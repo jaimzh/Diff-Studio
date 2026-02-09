@@ -245,7 +245,7 @@ export const ProChat: React.FC = () => {
 
   const handleSuggestionClick = async (suggestion: string) => {
     // Clear previous highlights and reset scroll tracker
-    const store = useWorkspaceStore.getState();
+  const store = useWorkspaceStore.getState();
     store.setHighlights([]);
     (store as any)._lastScrollRequest = null;
 

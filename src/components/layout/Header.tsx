@@ -9,12 +9,12 @@ interface HeaderProps {
   setChatMode: (mode: "regular" | "pro") => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header = ({
   activeTab,
   setActiveTab,
   chatMode,
   setChatMode,
-}) => {
+}: HeaderProps) => {
   return (
     <div>
       <div className="flex flex-row justify-between items-center  gap-4 px-4">
