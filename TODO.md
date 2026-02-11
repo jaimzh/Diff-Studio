@@ -4,19 +4,17 @@
 
 - [ ] Resizable Panel Constraints: Add constraints to panels so they show buttons when shrunk to a particular size (LeetCode style).
 - [ ] Arrangable Windows: Implement a flexible window management system similar to LeetCode's multi-panel layout.
-- [ ] Note Panel: Add a markdown-based quick notes panel.
+- [ ] Notes or txt in language support instead of a panel 
 - [ ] Excalidraw Panel: Integrate Excalidraw for sketching and diagramming.
-
 
 ## AI & Intelligence
 
 - [ ] Proper AI Handling: Enhance AI integration for better code analysis, diff generation, and chat responses.
-- [ ] AI Context Awareness: Ensure AI has context of all panels (notes, diagrams, code).....maybeeeee 
+- [ ] AI Context Awareness: Ensure AI has context of all panels (notes, diagrams, code).....maybeeeee
 
 ## Other
 
 - [ ] Refine Aesthetics: Continue polishing the premium look and feel.
-
 
 ## Infrastructure & Platform stuff, complex stuff to handle later
 

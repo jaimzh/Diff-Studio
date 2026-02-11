@@ -7,7 +7,7 @@ import { ProChat } from "./components/chat/ProChat";
 import { NotForMobile } from "./components/layout/NotForMobile";
 import { Preloader } from "./components/layout/Preloader";
 import { LayoutGrid, List } from "lucide-react";
-import { Group, Panel, Separator } from "react-resizable-panels";
+import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 import { AnimatePresence } from "motion/react";
 
@@ -19,6 +19,10 @@ function App() {
   const setCode = useWorkspaceStore((s) => s.setPanelCode);
   const setLabel = useWorkspaceStore((s) => s.setPanelLabel);
   const setLanguage = useWorkspaceStore((s) => s.setPanelLanguage);
+
+
+  const chatPanelRef = usePanelRef();
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
 
   const [activeTab, setActiveTab] = useState<"editor" | "diff">("editor");
   const [chatMode, setChatMode] = useState<"regular" | "pro">("regular");
@@ -53,7 +57,7 @@ function App() {
                 <div className="flex-1 bg-bg-light/50 rounded-2xl border border-border/50 p-2 overflow-hidden flex flex-col group/editors">
                   {activeTab === "editor" ? (
                     <Group orientation="horizontal" className="h-full">
-                      <Panel defaultSize={50} minSize={20} className="px-1">
+                      <Panel defaultSize={50} minSize={60} className="px-1">
                         <CodeEditor
                           side="left"
                           highlightClassName="highlight-left"
@@ -78,6 +82,8 @@ function App() {
                           onChange={(val) => setCode("right", val)}
                           onLabelChange={(val) => setLabel("right", val)}
                           onLanguageChange={(val) => setLanguage("right", val)}
+                            
+                            
                           language={right.language}
                           icon={<List className="w-3.5 h-3.5" />}
                         />
@@ -96,8 +102,12 @@ function App() {
               <Separator className="w-2 bg-transparent hover:bg-border/20 transition-all outline-none focus:outline-none focus:ring-0" />
 
               <Panel
+              panelRef={chatPanelRef}
+              collapsible
+              collapsedSize = {60}
                 defaultSize={25}
-                minSize={15}
+                minSize={35}
+             
                 className="bg-bg-light/20 rounded-xl border border-border shadow-2xl overflow-hidden"
               >
                 {chatMode === "regular" ? <ChatSidebar /> : <ProChat />}
