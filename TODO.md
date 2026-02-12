@@ -8,6 +8,7 @@
 - [x] Excalidraw Panel: Integrate Excalidraw for sketching and diagramming.
 - [ ] fix the buttons for the constraint on panel 2
 - [ ] fix unnecessary imports in app.jsx that is stopping deployment 
+- [ ] Conditionally render the scrollbar so it only shows when it is ewll expanded but the moment it is collapsed the hg color is transperent 
 `
 ## AI & Intelligence
 
