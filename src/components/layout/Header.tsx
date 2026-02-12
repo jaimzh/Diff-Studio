@@ -28,7 +28,7 @@ export const Header = ({
             Diff-Studio
           </h2>
           <p className="text-text-muted text-[11px] font-semibold uppercase tracking-widest mt-1">
-            AI Code Review & Comparison
+            Compare and Review
           </p>
         </div>
 

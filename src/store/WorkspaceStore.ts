@@ -31,12 +31,12 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   // INITIAL VALUES
   left: {
-    label: "Original Source",
+    label: "Jaimz' Code",
     language: "typescript",
     code: `// Traditional for-loop approach\nconst numbers = [1, 2, 3];\nconst doubled = [];\n\nfor (let i = 0; i < numbers.length; i++) {\n  doubled.push(numbers[i] * 2);\n}`,
   },
   right: {
-    label: "AI Refactored",
+    label: "Refactored Code",
     language: "typescript",
     code: `// Clean, functional approach\nconst numbers = [1, 2, 3];\n\nconst doubled = numbers.map(n => n * 2);`,
   },

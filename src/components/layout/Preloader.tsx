@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Terminal } from "lucide-react";
+
 
 export const Preloader = () => {
   const [progress, setProgress] = useState(0);
@@ -27,20 +27,8 @@ export const Preloader = () => {
       transition={{ duration: 0.8, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#09090b] text-white"
     >
-      <div className="relative flex flex-col items-center">
-        {/* Central Icon Area */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative z-10 flex items-center justify-center mb-8"
-        >
-          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
-            <Terminal className="w-8 h-8 text-white/80" strokeWidth={1.5} />
-          </div>
-        </motion.div>
-
-        {/* Text Content */}
+      <div className="relative flex flex-col items-center ">
+       
         <div className="text-center space-y-2 z-10">
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
@@ -59,9 +47,7 @@ export const Preloader = () => {
             Initializing
           </motion.p>
         </div>
-
-        {/* Progress Bar Container */}
-        <div className="mt-12 w-48 h-[2px] bg-white/5 rounded-full overflow-hidden relative z-10">
+        <div className="mt-8 w-48 h-[2px] bg-white/5 rounded-full overflow-hidden relative z-10">
           <motion.div
             className="absolute left-0 top-0 h-full bg-white/40"
             initial={{ width: 0 }}

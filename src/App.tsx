@@ -8,7 +8,7 @@ import { NotForMobile } from "./components/layout/NotForMobile";
 import { Preloader } from "./components/layout/Preloader";
 import { Whiteboard } from "./components/whiteboard/Whiteboard";
 import "@excalidraw/excalidraw/index.css";
-import { LayoutGrid, List, MessageSquare } from "lucide-react";
+import { Code, Code2, LayoutGrid, List, MessageSquare } from "lucide-react";
 import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 import { AnimatePresence } from "motion/react";
@@ -24,12 +24,20 @@ function App() {
   const setLanguage = useWorkspaceStore((s) => s.setPanelLanguage);
 
   const chatPanelRef = usePanelRef();
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(true);
+
+  const Panel1Ref = usePanelRef();
+  const Panel2Ref = usePanelRef();
+
+  const [isPanel1Collapsed, setIsPanel1Collapsed] = useState(false);
+  const [isPanel2Collapsed, setIsPanel2Collapsed] = useState(false);
 
   const [activeTab, setActiveTab] = useState<"editor" | "diff" | "whiteboard">(
     "editor",
   );
   const [chatMode, setChatMode] = useState<"regular" | "pro">("regular");
+
+  const panelCollapsedClass = "h-full w-full gap-10 flex flex-col items-center pt-6 bg-bg-light/40 hover:bg-bg-light/60 transition-colors cursor-pointer group"
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,6 +47,8 @@ function App() {
   }, []);
 
   return (
+
+    
     <>
       <AnimatePresence mode="wait">
         {isLoading && <Preloader key="preloader" />}
@@ -60,23 +70,92 @@ function App() {
                 <div className="flex-1 bg-bg-light/50 rounded-2xl border border-border/50 p-2 overflow-hidden flex flex-col group/editors">
                   {activeTab === "editor" ? (
                     <Group orientation="horizontal" className="h-full">
-                      <Panel defaultSize="50%" minSize="20%" className="px-1">
-                        <CodeEditor
-                          side="left"
-                          highlightClassName="highlight-left"
-                          label={left.label}
-                          value={left.code}
-                          onChange={(val) => setCode("left", val)}
-                          onLabelChange={(val) => setLabel("left", val)}
-                          onLanguageChange={(val) => setLanguage("left", val)}
-                          language={left.language}
-                          icon={<LayoutGrid className="w-3.5 h-3.5" />}
-                        />
+                      <Panel
+                        panelRef={Panel1Ref}
+                        collapsible
+                        collapsedSize="4%"
+                        onResize={(size) => {
+                          if (size.asPercentage < 5) {
+                            setIsPanel1Collapsed(true);
+                          } else {
+                            setIsPanel1Collapsed(false);
+                          }
+                        }}
+                        defaultSize="50%"
+                        minSize="5%"
+                        className="px-1"
+                      >
+                        {isPanel1Collapsed ? (
+                          <div
+                            className={panelCollapsedClass}
+                            onClick={() => {
+                              Panel1Ref.current?.resize("50%");
+                              setIsPanel1Collapsed(false);
+                            }}
+                          >
+                            <Code className="w-5 h-5 text-text-muted mb-6 group-hover:scale-110 transition-transform" />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto p-0 hover:bg-transparent text-text-muted group-hover:text-text-base rotate-90 whitespace-nowrap"
+                            >
+                              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                {left.label}
+                              </span>
+                            </Button>
+                          </div>
+                        ) : (
+                          <CodeEditor
+                            side="left"
+                            highlightClassName="highlight-left"
+                            label={left.label}
+                            value={left.code}
+                            onChange={(val) => setCode("left", val)}
+                            onLabelChange={(val) => setLabel("left", val)}
+                            onLanguageChange={(val) => setLanguage("left", val)}
+                            language={left.language}
+                            icon={<LayoutGrid className="w-3.5 h-3.5" />}
+                          />
+                        )}
                       </Panel>
 
                       <Separator className="w-2 bg-bg-light hover:bg-border transition-all outline-none focus:outline-none focus:ring-0" />
 
-                      <Panel defaultSize="50%" minSize="20%" className="px-1">
+                      <Panel
+                        panelRef={Panel2Ref}
+                        collapsible
+                        collapsedSize="4%"
+                        onResize={(size) => {
+                          if (size.asPercentage < 5) {
+                            setIsPanel2Collapsed(true);
+                          } else {
+                            setIsPanel2Collapsed(false);
+                          }
+                        }}
+                        defaultSize="50%"
+                        minSize="5%"
+                        className="px-1"
+                      >
+                        {isPanel2Collapsed ? (
+                          <div
+                            className={panelCollapsedClass}
+                            onClick={() => {
+                              Panel2Ref.current?.resize("50%");
+                              setIsPanel2Collapsed(false);
+                            }}
+                          >
+                            <Code className="w-5 h-5 text-text-muted mb-4 group-hover:scale-110 transition-transform" />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto p-0 hover:bg-transparent text-text-muted group-hover:text-text-base rotate-90 whitespace-nowrap"
+                            >
+                              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                {right.label}
+                              </span>
+                            </Button>
+                          </div>
+                        ) : (
                         <CodeEditor
                           side="right"
                           highlightClassName="highlight-right"
@@ -88,6 +167,7 @@ function App() {
                           language={right.language}
                           icon={<List className="w-3.5 h-3.5" />}
                         />
+                        )}
                       </Panel>
                     </Group>
                   ) : activeTab === "whiteboard" ? (
@@ -102,13 +182,14 @@ function App() {
                 </div>
               </Panel>
 
-              <Separator className="w-2 bg-transparent hover:bg-border/20 transition-all outline-none focus:outline-none focus:ring-0" />
+              <Separator className="w-2 bg-transparent hover:bg-border transition-all outline-none focus:outline-none focus:ring-0" />
 
               <Panel
                 panelRef={chatPanelRef}
                 collapsible
                 defaultSize="25%"
                 minSize="15%"
+                maxSize="60%"
                 collapsedSize="3%"
                 onResize={(size) => {
                   if (size.asPercentage < 10) {
@@ -121,13 +202,13 @@ function App() {
               >
                 {isChatCollapsed ? (
                   <div
-                    className="h-full w-full gap-3 flex flex-col items-center pt-6 bg-bg-light/40 hover:bg-bg-light/60 transition-colors cursor-pointer group"
+                    className="h-full w-full gap-4 flex flex-col items-center rounded-xl pt-8  bg-bg-light/40 hover:bg-bg-light/60 transition-colors cursor-pointer group"
                     onClick={() => {
                       chatPanelRef.current?.resize("25%");
                       setIsChatCollapsed(false);
                     }}
                   >
-                    <MessageSquare className="w-5 h-5 text-accent mb-6 group-hover:scale-110 transition-transform" />
+                    <MessageSquare className="w-5 h-5 text-text-muted mb-6 group-hover:scale-110 transition-transform" />
                     <Button
                       variant="ghost"
                       size="sm"
