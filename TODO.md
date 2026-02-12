@@ -2,11 +2,13 @@
 
 ## UI Stuff
 
-- [ ] Resizable Panel Constraints: Add constraints to panels so they show buttons when shrunk to a particular size (LeetCode style).
+- [x] Resizable Panel Constraints: Add constraints to panels so they show buttons when shrunk to a particular size (LeetCode style).
 - [ ] Arrangable Windows: Implement a flexible window management system similar to LeetCode's multi-panel layout.
 - [x] Notes or txt in language support instead of a panel 
 - [x] Excalidraw Panel: Integrate Excalidraw for sketching and diagramming.
-
+- [ ] fix the buttons for the constraint on panel 2
+- [ ] fix unnecessary imports in app.jsx that is stopping deployment 
+`
 ## AI & Intelligence
 
 - [ ] Proper AI Handling: Enhance AI integration for better code analysis, diff generation, and chat responses.
