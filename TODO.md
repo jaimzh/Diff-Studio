@@ -4,8 +4,8 @@
 
 - [ ] Resizable Panel Constraints: Add constraints to panels so they show buttons when shrunk to a particular size (LeetCode style).
 - [ ] Arrangable Windows: Implement a flexible window management system similar to LeetCode's multi-panel layout.
-- [ ] Notes or txt in language support instead of a panel 
-- [ ] Excalidraw Panel: Integrate Excalidraw for sketching and diagramming.
+- [x] Notes or txt in language support instead of a panel 
+- [x] Excalidraw Panel: Integrate Excalidraw for sketching and diagramming.
 
 ## AI & Intelligence
 

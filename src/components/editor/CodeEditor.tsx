@@ -45,6 +45,7 @@ export const CodeEditor = ({
     "html",
     "css",
     "json",
+    "plaintext"
   ];
 
   const handleEditorChange = (value: string | undefined) => {

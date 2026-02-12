@@ -29,7 +29,7 @@ export const ChatSidebar: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
 
-    // Clear previous highlights and reset scroll tracker
+    
     const store = useWorkspaceStore.getState();
     store.setHighlights([]);
     (store as any)._lastScrollRequest = null;
@@ -60,7 +60,6 @@ export const ChatSidebar: React.FC = () => {
       for await (const part of stream) {
         fullText += typeof part === "string" ? part : part.text || "";
 
-        // Parse highlights and get clean content for display
         const displayContent = parseAndApplyHighlights(fullText);
 
         setMessages((prev) =>
@@ -79,8 +78,7 @@ export const ChatSidebar: React.FC = () => {
   const startAnalysis = async () => {
     setIsTyping(true);
 
-    // Clear previous highlights and reset scroll tracker
-    const store = useWorkspaceStore.getState();
+      const store = useWorkspaceStore.getState();
     store.setHighlights([]);
     (store as any)._lastScrollRequest = null;
 
@@ -101,7 +99,6 @@ export const ChatSidebar: React.FC = () => {
       for await (const part of stream) {
         fullText += typeof part === "string" ? part : part.text || "";
 
-        // Parse highlights and get clean content for display
         const displayContent = parseAndApplyHighlights(fullText);
 
         setMessages((prev) =>
@@ -137,10 +134,10 @@ export const ChatSidebar: React.FC = () => {
           </div>
           <div>
             <h3 className="text-[11px] font-bold text-text-base uppercase tracking-widest">
-              Assistant
+              Diff AI
             </h3>
             <p className="text-[9px] text-text-muted uppercase tracking-[0.15em] font-medium">
-              Ready
+              Powered by PuterJs
             </p>
           </div>
         </div>
@@ -181,7 +178,7 @@ export const ChatSidebar: React.FC = () => {
             </p>
             <button
               onClick={startAnalysis}
-              className="px-5 py-2 bg-accent hover:opacity-90 text-accent-foreground rounded text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer"
+              className="px-5 py-2 bg-accent pphover:opacity-90 text-accent-foreground rounded text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer"
             >
               Run Deep Analysis
             </button>
@@ -245,12 +242,12 @@ export const ChatSidebar: React.FC = () => {
               }
             }}
             placeholder="Analysis request..."
-            className="w-full bg-bg-dark border border-border rounded px-4 py-3 pr-12 text-[13px] text-text-base outline-none focus:border-text-muted/50 transition-colors resize-none h-[50px] overflow-hidden"
+            className="w-full bg-bg-dark/50 hover:bg-bg-dark border border-border rounded-xl px-4 py-4 pr-12 text-[13px] text-text-base outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all resize-none min-h-[56px] max-h-[160px] overflow-y-auto shadow-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-accent hover:opacity-90 disabled:opacity-50 text-accent-foreground rounded transition-all cursor-pointer"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 bg-accent hover:bg-accent/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 text-accent-foreground rounded-lg transition-all cursor-pointer shadow-md"
           >
             {isTyping ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />

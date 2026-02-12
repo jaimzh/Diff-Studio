@@ -1,10 +1,10 @@
 import React from "react";
-import { LayoutGrid, List, MessageSquare, Sparkles } from "lucide-react";
+import { LayoutGrid, List, MessageSquare, Palette, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
-  activeTab: "editor" | "diff";
-  setActiveTab: (tab: "editor" | "diff") => void;
+  activeTab: "editor" | "diff" | "whiteboard";
+  setActiveTab: (tab: "editor" | "diff" | "whiteboard") => void;
   chatMode: "regular" | "pro";
   setChatMode: (mode: "regular" | "pro") => void;
 }
@@ -20,7 +20,7 @@ export const Header = ({
       <div className="flex flex-row justify-between items-center  gap-4 px-4">
         <div>
           <h2 className="text-xl font-bold text-text-base tracking-tight uppercase">
-           Diff-Studio
+            Diff-Studio
           </h2>
           <p className="text-text-muted text-[11px] font-semibold uppercase tracking-widest mt-1">
             AI Code Review & Comparison
@@ -36,6 +36,7 @@ export const Header = ({
             <LayoutGrid className="w-3.5 h-3.5 mr-2" />
             Editor
           </Button>
+         
           <Button
             variant={activeTab === "diff" ? "tabActive" : "tab"}
             size="tab"
@@ -43,6 +44,16 @@ export const Header = ({
           >
             <List className="w-3.5 h-3.5 mr-2" />
             Visual Diff
+          </Button>
+
+
+           <Button
+            variant={activeTab === "whiteboard" ? "tabActive" : "tab"}
+            size="tab"
+            onClick={() => setActiveTab("whiteboard")}
+          >
+            <Palette className="w-3.5 h-3.5 mr-2" />
+            Canvas
           </Button>
         </div>
 
