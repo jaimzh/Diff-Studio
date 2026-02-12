@@ -38,7 +38,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   right: {
     label: "Refactored Code",
     language: "typescript",
-    code: `// Clean, functional approach\nconst numbers = [1, 2, 3];\n\nconst doubled = numbers.map(n => n * 2);`,
+    code: `// Clean, functional approach\nconst nums = [1, 2, 3];\n\nconst multiply = nums.map(n => n * 2);`,
   },
 
   activeHighlights: [],
