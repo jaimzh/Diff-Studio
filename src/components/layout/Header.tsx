@@ -1,5 +1,10 @@
-import React from "react";
-import { LayoutGrid, List, MessageSquare, Palette, Sparkles } from "lucide-react";
+import {
+  LayoutGrid,
+  List,
+  MessageSquare,
+  Palette,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
@@ -36,7 +41,7 @@ export const Header = ({
             <LayoutGrid className="w-3.5 h-3.5 mr-2" />
             Editor
           </Button>
-         
+
           <Button
             variant={activeTab === "diff" ? "tabActive" : "tab"}
             size="tab"
@@ -46,8 +51,7 @@ export const Header = ({
             Visual Diff
           </Button>
 
-
-           <Button
+          <Button
             variant={activeTab === "whiteboard" ? "tabActive" : "tab"}
             size="tab"
             onClick={() => setActiveTab("whiteboard")}

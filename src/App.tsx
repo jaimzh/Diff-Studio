@@ -8,14 +8,7 @@ import { NotForMobile } from "./components/layout/NotForMobile";
 import { Preloader } from "./components/layout/Preloader";
 import { Whiteboard } from "./components/whiteboard/Whiteboard";
 import "@excalidraw/excalidraw/index.css";
-import {
-  LayoutGrid,
-  List,
-  MessageSquare,
-  ChevronRight,
-  ChevronLeft,
-  Sparkles,
-} from "lucide-react";
+import { LayoutGrid, List, MessageSquare } from "lucide-react";
 import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 import { AnimatePresence } from "motion/react";
