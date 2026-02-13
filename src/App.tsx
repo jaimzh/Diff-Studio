@@ -8,7 +8,7 @@ import { NotForMobile } from "./components/layout/NotForMobile";
 import { Preloader } from "./components/layout/Preloader";
 import { Whiteboard } from "./components/whiteboard/Whiteboard";
 import "@excalidraw/excalidraw/index.css";
-import { Code, Code2, LayoutGrid, List, MessageSquare } from "lucide-react";
+import { Code, Code2,  MessageSquare } from "lucide-react";
 import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 import { AnimatePresence } from "motion/react";
@@ -114,12 +114,12 @@ function App() {
                             onLabelChange={(val) => setLabel("left", val)}
                             onLanguageChange={(val) => setLanguage("left", val)}
                             language={left.language}
-                            icon={<LayoutGrid className="w-3.5 h-3.5" />}
+                            icon={<Code className="w-3.5 h-3.5" />}
                           />
                         )}
                       </Panel>
 
-                      <Separator className="w-2 bg-bg-light hover:bg-border transition-all outline-none focus:outline-none focus:ring-0" />
+                      <Separator className={`${isPanel1Collapsed || isPanel2Collapsed ? "w-1" : "w-2"} ${isPanel1Collapsed || isPanel2Collapsed ? "bg-transparent" : "bg-bg-light"} hover:bg-border transition-all outline-none focus:outline-none focus:ring-0`} />
 
                       <Panel
                         panelRef={Panel2Ref}
@@ -144,7 +144,7 @@ function App() {
                               setIsPanel2Collapsed(false);
                             }}
                           >
-                            <Code className="w-5 h-5 text-text-muted mb-4 group-hover:scale-110 transition-transform" />
+                            <Code2 className="w-5 h-5 text-text-muted mb-6 group-hover:scale-110 transition-transform" />
                             <Button
                               variant="ghost"
                               size="sm"
@@ -165,7 +165,7 @@ function App() {
                           onLabelChange={(val) => setLabel("right", val)}
                           onLanguageChange={(val) => setLanguage("right", val)}
                           language={right.language}
-                          icon={<List className="w-3.5 h-3.5" />}
+                          icon={<Code2 className="w-3.5 h-3.5" />}
                         />
                         )}
                       </Panel>

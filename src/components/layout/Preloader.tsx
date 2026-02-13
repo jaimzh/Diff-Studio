@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 export const Preloader = () => {
   const [progress, setProgress] = useState(0);
 
+  //comme back to this to do some diff study
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
