@@ -18,7 +18,19 @@ export const ProChat: React.FC = () => {
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
   >("ready");
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([
+    {
+      key: "welcome",
+      from: "assistant",
+      versions: [
+        {
+          id: "welcome-v1",
+          content:
+            "Hello! welcome to Diff Studio. I'm your AI Assistant, here to help you compare, refactor, and understand your code. How can I assist you today?",
+        },
+      ],
+    },
+  ]);
 
   const addUserMessage = useCallback(
     async (content: string) => {

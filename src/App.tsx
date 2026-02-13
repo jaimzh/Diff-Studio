@@ -8,7 +8,7 @@ import { NotForMobile } from "./components/layout/NotForMobile";
 import { Preloader } from "./components/layout/Preloader";
 import { Whiteboard } from "./components/whiteboard/Whiteboard";
 import "@excalidraw/excalidraw/index.css";
-import { Code, Code2,  MessageSquare } from "lucide-react";
+import { Code, Code2, MessageSquare } from "lucide-react";
 import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
 import { useWorkspaceStore } from "./store/WorkspaceStore";
 import { AnimatePresence } from "motion/react";
@@ -37,7 +37,8 @@ function App() {
   );
   const [chatMode, setChatMode] = useState<"regular" | "pro">("regular");
 
-  const panelCollapsedClass = "h-full w-full gap-10 flex flex-col items-center pt-6 bg-bg-light/40 hover:bg-bg-light/60 transition-colors cursor-pointer group"
+  const panelCollapsedClass =
+    "h-full w-full gap-10 flex flex-col items-center pt-6 bg-bg-light/40 hover:bg-bg-light/60 transition-colors cursor-pointer group";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -47,8 +48,6 @@ function App() {
   }, []);
 
   return (
-
-    
     <>
       <AnimatePresence mode="wait">
         {isLoading && <Preloader key="preloader" />}
@@ -119,7 +118,9 @@ function App() {
                         )}
                       </Panel>
 
-                      <Separator className={`${isPanel1Collapsed || isPanel2Collapsed ? "w-1" : "w-2"} ${isPanel1Collapsed || isPanel2Collapsed ? "bg-transparent" : "bg-bg-light"} hover:bg-border transition-all outline-none focus:outline-none focus:ring-0`} />
+                      <Separator
+                        className={`${isPanel1Collapsed || isPanel2Collapsed ? "w-1" : "w-2"} ${isPanel1Collapsed || isPanel2Collapsed ? "bg-transparent" : "bg-bg-light"} hover:bg-border transition-all outline-none focus:outline-none focus:ring-0`}
+                      />
 
                       <Panel
                         panelRef={Panel2Ref}
@@ -156,17 +157,19 @@ function App() {
                             </Button>
                           </div>
                         ) : (
-                        <CodeEditor
-                          side="right"
-                          highlightClassName="highlight-right"
-                          label={right.label}
-                          value={right.code}
-                          onChange={(val) => setCode("right", val)}
-                          onLabelChange={(val) => setLabel("right", val)}
-                          onLanguageChange={(val) => setLanguage("right", val)}
-                          language={right.language}
-                          icon={<Code2 className="w-3.5 h-3.5" />}
-                        />
+                          <CodeEditor
+                            side="right"
+                            highlightClassName="highlight-right"
+                            label={right.label}
+                            value={right.code}
+                            onChange={(val) => setCode("right", val)}
+                            onLabelChange={(val) => setLabel("right", val)}
+                            onLanguageChange={(val) =>
+                              setLanguage("right", val)
+                            }
+                            language={right.language}
+                            icon={<Code2 className="w-3.5 h-3.5" />}
+                          />
                         )}
                       </Panel>
                     </Group>
@@ -187,7 +190,7 @@ function App() {
               <Panel
                 panelRef={chatPanelRef}
                 collapsible
-                defaultSize="25%"
+                defaultSize="3%"
                 minSize="15%"
                 maxSize="60%"
                 collapsedSize="3%"

@@ -31,14 +31,33 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   // INITIAL VALUES
   left: {
-    label: "Jaimz' Code",
-    language: "typescript",
-    code: `// Traditional for-loop approach\nconst numbers = [1, 2, 3];\nconst doubled = [];\n\nfor (let i = 0; i < numbers.length; i++) {\n  doubled.push(numbers[i] * 2);\n}`,
+    label: "Instructions",
+    language: "markdown",
+    code: `# Welcome to Diff Studio
+
+Diff Studio is a modern, AI-powered development workspace designed to streamline your coding workflow.
+
+### What is Diff Studio?
+Diff Studio provides a seamless environment for code comparison, refactoring, and creative brainstorming. It's built for developers who value clarity and speed.
+
+### Key Features:
+**Dual-Pane Editor**: Write and edit code in two independent panels.
+**Intelligent Diff Viewing**: Instantly see the differences between snippets with precision.
+**Pro AI Assistant**: Interact with a powerful AI that understands your code context.
+**Creative Whiteboard**: Sketch architecture designs directly within your workspace.
+**Premium UI**: Optimized for focus with a sleek, dark-mode aesthetic.
+
+### How to get started:
+1. **Explore**: Try editing the code in either panel.
+2. **Compare**: Click the 'Diff' tab in the header to see visual changes.
+3. **Analyze**: Use the Assistant on the right to ask questions or request refactors.
+
+*Happy Coding!*`,
   },
   right: {
-    label: "Refactored Code",
-    language: "typescript",
-    code: `// Clean, functional approach\nconst nums = [1, 2, 3];\n\nconst multiply = nums.map(n => n * 2);`,
+    label: "Jaimz code",
+    language: "python",
+    code: `def greet(name):\n    """Simple function to welcome you."""\n    return f"Hello, {name}! Welcome to Diff Studio."\n\n# Try changing this or asking the AI to refactor it!\nprint(greet("Developer"))`,
   },
 
   activeHighlights: [],

@@ -43,9 +43,9 @@ export const Preloader = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 0.4 }}
             transition={{ delay: 0.3 }}
-            className="text-[10px] uppercase tracking-[0.4em] font-medium"
+            className="text-[10px] mt-5 uppercase tracking-[0.4em] font-medium"
           >
-            Initializing
+            Prepare to experience peak software (maybe idk)
           </motion.p>
         </div>
         <div className="mt-8 w-48 h-[2px] bg-white/5 rounded-full overflow-hidden relative z-10">

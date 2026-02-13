@@ -45,7 +45,8 @@ export const CodeEditor = ({
     "html",
     "css",
     "json",
-    "plaintext"
+    "plaintext",
+    "markdown",
   ];
 
   const handleEditorChange = (value: string | undefined) => {
@@ -84,7 +85,6 @@ export const CodeEditor = ({
     const editor = editorRef.current;
     editor.revealLineInCenter(scrollRequest.line);
 
-  
     setTimeout(() => {
       const current = useWorkspaceStore.getState().scrollRequest;
       if (current?.line === scrollRequest.line && current?.side === side) {
@@ -121,11 +121,7 @@ export const CodeEditor = ({
 
       <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-bg-light/50">
         <div className="flex items-center gap-2">
-          {icon && (
-            <div className="text-text-muted ">
-              {icon}
-            </div>
-          )}
+          {icon && <div className="text-text-muted ">{icon}</div>}
           <span className="text-sm font-bold text-text-muted uppercase tracking-wider">
             <input
               type="text"
