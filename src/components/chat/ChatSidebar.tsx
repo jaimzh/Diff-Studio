@@ -1,12 +1,4 @@
-import {
-  Bot,
-  Loader2,
-  Maximize2,
-  Minimize2,
-  Send,
-  Trash2,
-  User,
-} from "lucide-react";
+import { Bot, Loader2, Send, Trash2, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { aiService, type Message } from "../../services/aiService";
 import { useWorkspaceStore } from "@/store/WorkspaceStore";
@@ -17,7 +9,6 @@ export const ChatSidebar: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +20,6 @@ export const ChatSidebar: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
 
-    
     const store = useWorkspaceStore.getState();
     store.setHighlights([]);
     (store as any)._lastScrollRequest = null;
@@ -78,7 +68,7 @@ export const ChatSidebar: React.FC = () => {
   const startAnalysis = async () => {
     setIsTyping(true);
 
-      const store = useWorkspaceStore.getState();
+    const store = useWorkspaceStore.getState();
     store.setHighlights([]);
     (store as any)._lastScrollRequest = null;
 
@@ -119,14 +109,7 @@ export const ChatSidebar: React.FC = () => {
   };
 
   return (
-    <div
-      className={`
-      fixed bottom-6 right-6 z-40 transition-all duration-300 ease-in-out flex flex-col
-      bg-bg-light border border-border rounded-lg
-      ${isExpanded ? "w-[600px] h-[700px]" : "w-[400px] h-[550px]"}
-      md:relative md:bottom-auto md:right-auto md:h-full md:w-full
-    `}
-    >
+    <div className="fixed bottom-6 right-6 z-40 transition-all duration-300 ease-in-out flex flex-col bg-bg-light border border-border rounded-lg w-[400px] h-[550px] md:relative md:bottom-auto md:right-auto md:h-full md:w-full">
       <div className="px-4 py-3 border-b border-border bg-bg-light/80 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded bg-accent flex items-center justify-center">
@@ -147,16 +130,6 @@ export const ChatSidebar: React.FC = () => {
             className="p-1.5 hover:bg-bg-dark text-text-muted hover:text-text-base rounded transition-colors cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 hover:bg-bg-dark text-text-muted hover:text-text-base rounded transition-colors hidden md:block cursor-pointer"
-          >
-            {isExpanded ? (
-              <Minimize2 className="w-3.5 h-3.5" />
-            ) : (
-              <Maximize2 className="w-3.5 h-3.5" />
-            )}
           </button>
         </div>
       </div>
